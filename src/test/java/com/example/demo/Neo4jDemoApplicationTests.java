@@ -1,16 +1,16 @@
 package com.example.demo;
 
+import com.example.demo.ziben.Term;
+import com.example.demo.ziben.TermR;
+import com.example.demo.ziben.TermRelation;
+import com.example.demo.ziben.TermRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.example.demo.JsonSimple;
-import com.example.demo.Movie;
-import com.example.demo.MovieRepository;
-import com.example.demo.Person;
-import com.example.demo.PersonRepository;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -69,5 +69,78 @@ public class Neo4jDemoApplicationTests {
 
     }
 
+// ----------------------------------------------------------------
+    @Autowired
+    TermRepository termRepo;
+
+    // 创建节点
+    @Test
+    public void testSaveTerm() {
+
+        termRepo.deleteAll();
+        Term t1 = new Term("1784", "鲁宾孙漂流记11","asdsadasdsadasdasdasahh哈哈哈阿斯达克建行卡号我看好卡");
+        Term t2 = new Term("1", "传说","asdsadas啊实打实的了就卡死dsadasdasdasahh看好卡");
+        termRepo.save(t1);
+        termRepo.save(t2);
+    }
+    // 测试通过name得到term
+    @Test
+    public void testfindByTermName() {
+        Term t1 = termRepo.findByName("赋税");
+        System.out.println(JsonSimple.toJson(t1));
+
+    }
+    // 测试通过id得到term
+    @Test
+    public void testfindByTermId() {
+        Term t1 = termRepo.findById("1");
+        System.out.println(JsonSimple.toJson(t1));
+    }
+    // 测试得到所有的term
+    @Test
+    public void testfindAllNode() {
+        List<Term> termList = termRepo.getTermList();
+        System.out.println(JsonSimple.toJson(termList));
+    }
+    // 测试与name节点相关的节点
+    @Test
+    public void testfindTermByNameByRel() {
+        List<TermRelation> termList = termRepo.findTermByNameByRel("赋税");
+        System.out.println(JsonSimple.toJson(termList));
+    }
+    // 测试得到所有的节点和关系
+    @Test
+    public void testfindTermAndRel(){
+        List<TermR> termAll = termRepo.findTermAll();
+        System.out.println(JsonSimple.toJson(termAll));
+    }
+
+
+    @Test
+    public void testselectTermByName(){
+        // 模糊
+        List<TermR> termAll = termRepo.selectTermByNameObscure("货币流通");
+        System.out.println(JsonSimple.toJson(termAll));
+    }
+    // --------------------------------
+
+
+    @Test
+    public void testGetRandomTerm() {
+        List<Term> term = termRepo.getRandomTerm(40, 50);
+        System.out.println(JsonSimple.toJson(term));
+    }
+
 }
 
+/**
+ * MATCH (n)
+ * OPTIONAL MATCH (n)-[r]-()
+ * DELETE n,r
+ *
+ *
+ * START t=node(*)
+ * MATCH (a)-[:likes]->(t)
+ * RETURN a
+ * SKIP {randomoffset} LIMIT {randomcount}
+ */
