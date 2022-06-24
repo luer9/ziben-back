@@ -17,7 +17,7 @@ public class TermController {
 
     // 根据name获取term节点
     @GetMapping(value = "getByName")
-    public Term GetTermByName(@RequestParam(value = "name") String name) {
+    public Term GetTermByName(String name) {
         return termRepository.findByName(name);
     }
     // 获取所有节点
@@ -38,17 +38,31 @@ public class TermController {
     // 根据name模糊查询 返回TermR
     @GetMapping(value = "selectByName")
     public List<TermR> SelectTermByName(String name) {
-        System.out.println("这是怎么一回事啊");
-        // 先精确 后模糊
-        List<TermR> termRSPrecise = termRepository.selectTermByNamePrecise(name);
-//        System.out.println("----->" + termRSPrecise);
-        // 精确为空
-        if(!termRSPrecise.isEmpty()) {
-            return termRSPrecise;
+        if (name.equals("《资本论》")) {
+            List<TermR> randomTerm = new ArrayList<>();
+            Integer randomoffset = new Random().nextInt(10) + 10;
+            Integer randomcount = new Random().nextInt(30) + 30;
+            List<Term> enTerms = termRepository.getRandomTerm(randomoffset, randomcount);
+            Term stTerm = new Term("0", "《资本论》", "《资本论》术语知识图谱，包括1738个术语，相似关系34760条");
+            stTerm.setId(Long.valueOf(0));
+            for (Term enTerm: enTerms) {
+                TermR termR = new TermR(stTerm, "contains", enTerm);
+                randomTerm.add(termR);
+            }
+            System.out.println(JsonSimple.toJson(randomTerm));
+            return randomTerm;
         }else {
-            return termRepository.selectTermByNameObscure(name);
+            // 先精确 后模糊
+            List<TermR> termRSPrecise = termRepository.selectTermByNamePrecise(name);
+//        System.out.println("----->" + termRSPrecise);
+            // 精确为空
+            if(!termRSPrecise.isEmpty()) {
+                return termRSPrecise;
+            }else {
+                // 修改格式
+                return termUtil.filter(name, termRepository.selectTermByNameObscure(name)) ;
+            }
         }
-
     }
     // 前端用
     // 获取所有的节点和关系  limit 100
@@ -74,8 +88,8 @@ public class TermController {
     @GetMapping(value = "getRandomTerm")
     public List<TermR> GetRandomTerm() {
         List<TermR> randomTerm = new ArrayList<>();
-        Integer randomoffset = new Random().nextInt(30) + 30;
-        Integer randomcount = new Random().nextInt(50) + 50;
+        Integer randomoffset = new Random().nextInt(10) + 10;
+        Integer randomcount = new Random().nextInt(30) + 30;
         List<Term> enTerms = termRepository.getRandomTerm(randomoffset, randomcount);
         Term stTerm = new Term("0", "《资本论》", "《资本论》术语知识图谱，包括1738个术语，相似关系34760条");
         stTerm.setId(Long.valueOf(0));
