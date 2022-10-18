@@ -38,18 +38,19 @@ public class TermController {
     // 根据name模糊查询 返回TermR
     @GetMapping(value = "selectByName")
     public List<TermR> SelectTermByName(String name) {
+        System.out.println("[name: ]" + name);
         if (name.equals("《资本论》")) {
             List<TermR> randomTerm = new ArrayList<>();
             Integer randomoffset = new Random().nextInt(10) + 10;
             Integer randomcount = new Random().nextInt(30) + 30;
             List<Term> enTerms = termRepository.getRandomTerm(randomoffset, randomcount);
-            Term stTerm = new Term("0", "《资本论》", "《资本论》术语知识图谱，包括1738个术语，相似关系34760条");
+            Term stTerm = new Term("0", "《资本论》", "《资本论》汉英术语知识图谱，包括1738个术语，相似关系34760条");
             stTerm.setId(Long.valueOf(0));
             for (Term enTerm: enTerms) {
                 TermR termR = new TermR(stTerm, "contains", enTerm);
                 randomTerm.add(termR);
             }
-            System.out.println(JsonSimple.toJson(randomTerm));
+//            System.out.println(JsonSimple.toJson(randomTerm));
             return randomTerm;
         }else {
             // 先精确 后模糊
@@ -89,7 +90,7 @@ public class TermController {
     public List<TermR> GetRandomTerm() {
         List<TermR> randomTerm = new ArrayList<>();
         Integer randomoffset = new Random().nextInt(10) + 10;
-        Integer randomcount = new Random().nextInt(30) + 30;
+        Integer randomcount = new Random().nextInt(50) + 30;
         List<Term> enTerms = termRepository.getRandomTerm(randomoffset, randomcount);
         Term stTerm = new Term("0", "《资本论》", "《资本论》术语知识图谱，包括1738个术语，相似关系34760条");
         stTerm.setId(Long.valueOf(0));
@@ -97,7 +98,7 @@ public class TermController {
             TermR termR = new TermR(stTerm, "contains", enTerm);
             randomTerm.add(termR);
         }
-        System.out.println(JsonSimple.toJson(randomTerm));
+//        System.out.println(JsonSimple.toJson(randomTerm));
         return randomTerm;
         //return termRepository.getRandomTerm();
     }
