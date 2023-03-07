@@ -38,7 +38,7 @@ public class TermController {
     // 根据name模糊查询 返回TermR
     @GetMapping(value = "selectByName")
     public List<TermR> SelectTermByName(String name) {
-        System.out.println("[name: ]" + name);
+//        System.out.println("[name: ]" + name);
         if (name.equals("《资本论》")) {
             List<TermR> randomTerm = new ArrayList<>();
             Integer randomoffset = new Random().nextInt(10) + 10;
@@ -55,7 +55,7 @@ public class TermController {
         }else {
             // 先精确 后模糊
             List<TermR> termRSPrecise = termRepository.selectTermByNamePrecise(name);
-//        System.out.println("----->" + termRSPrecise);
+//            System.out.println("----->" + termRSPrecise);
             // 精确为空
             if(!termRSPrecise.isEmpty()) {
                 return termRSPrecise;
