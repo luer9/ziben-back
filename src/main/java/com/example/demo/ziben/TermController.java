@@ -89,11 +89,19 @@ public class TermController {
     @GetMapping(value = "getRandomTerm")
     public List<TermR> GetRandomTerm() {
         List<TermR> randomTerm = new ArrayList<>();
-        Integer randomoffset = new Random().nextInt(10) + 10;
-        Integer randomcount = new Random().nextInt(50) + 30;
-        List<Term> enTerms = termRepository.getRandomTerm(randomoffset, randomcount);
-        Term stTerm = new Term("0", "《资本论》", "《资本论》术语知识图谱，包括1738个术语，相似关系34760条");
+        List<Term> enTerms = termRepository.rankTermNew();
+//        System.out.println(">>>> " + enTerms.size());
+//        List<String> rankTerms = GetTermRank().subList(0,34); // 50 -》25
+//        System.out.println(">>>> " + rankTerms.size());
+//        Integer randomoffset = new Random().nextInt(10) + 10;
+//        Integer randomcount = new Random().nextInt(50) + 30;
+//        List<Term> enTerms = termRepository.getRandomTerm(randomoffset, randomcount);
+        Term stTerm = new Term("0", "《资本论》", "《资本论》术语知识图谱，包括1738个术语，相似关系34840条");
         stTerm.setId(Long.valueOf(0));
+//        for(String enStr: rankTerms) {
+//            TermR termR = new TermR(stTerm, "contains", GetTermByName(enStr));
+//            randomTerm.add(termR);
+//        }
         for (Term enTerm: enTerms) {
             TermR termR = new TermR(stTerm, "contains", enTerm);
             randomTerm.add(termR);

@@ -53,6 +53,10 @@ public interface TermRepository extends Neo4jRepository<Term, Long> {
     @Query("match (n:Term) with n, size((n)-[]->() + (n)<-[]-()) as s order by s desc return n.name limit 100")
     List<String> rankTerm();
 
+    // 根据出度+入度返回Term术语实体
+    @Query("match (n:Term) with n, size((n)-[]->() + (n)<-[]-()) as s order by s desc return n limit 50")
+    List<Term> rankTermNew();
+
     // 返回所有的术语名
     @Query("match (n:Term) with n return n.name")
     List<String> getTermAllName();
